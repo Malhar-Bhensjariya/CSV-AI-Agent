@@ -1,10 +1,18 @@
-from rules.rule_engine import parse_command
-from agents.csv_agent import answer_question
+from agents.agent_executor import CSVAgentExecutor
+from core.data_processor.csv_editor import CSVProcessor
 
-def route_query(file_path, question):
-    command = parse_command(question)
-    if command:
-        # Placeholder: You will implement command-based CSV editing here.
-        return f"Executed command: {command}"
-    else:
-        return answer_question(file_path, question)
+class QueryRouter:
+    def __init__(self):
+        self.agent = CSVAgentExecutor()
+
+    def route_query(self, file_path: str, question: str):
+        try:
+            return self.agent.execute(file_path, question)
+        except FileNotFoundError:
+            return "Error: File not found"
+        except Exception as e:
+            return f"Unexpected error: {str(e)}"
+
+    def get_preview(self, file_path: str, rows: int):
+        processor = CSVProcessor(file_path)
+        return processor.get_preview(rows)

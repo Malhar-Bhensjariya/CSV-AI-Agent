@@ -1,21 +1,33 @@
-import { proxyToFlask } from '../utils/fileHandler.js';
-
 export const handleChat = async (req, res) => {
   try {
-    const { message } = req.body;
-    const response = await proxyToFlask('/chat', { message });
+    const { filename, question } = req.body;
+    
+    if (!filename || !question) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const response = await proxyToFlask('/query', { filename, question });
     res.json(response);
   } catch (error) {
-    res.status(500).json({ error: 'Chatbot failed' });
+    res.status(500).json({ 
+      error: error.message || 'Chat processing failed',
+      details: error.response?.data?.details 
+    });
   }
 };
 
 export const handleCSVUpload = async (req, res) => {
   try {
-    const filePath = req.file.path;
-    const response = await proxyToFlask('/upload', {}, filePath);
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    
+    const response = await proxyToFlask('/upload', {}, req.file.path);
     res.json(response);
   } catch (error) {
-    res.status(500).json({ error: 'File upload failed' });
+    res.status(500).json({ 
+      error: error.message || 'File upload failed',
+      details: error.response?.data?.details
+    });
   }
 };
