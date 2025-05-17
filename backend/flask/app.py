@@ -1,10 +1,11 @@
 from dotenv import load_dotenv
 load_dotenv()
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 from werkzeug.utils import secure_filename
 from core.router import QueryRouter
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -66,10 +67,31 @@ def handle_query():
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     
     try:
-        response = router.route_query(file_path, question)
-        return jsonify({'response': response}), 200
+        response_text = router.route_query(file_path, question)
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"CSV file not found at: {file_path}")
+        
+        file_stream = io.BytesIO()
+        with open(file_path, 'rb') as f:
+            file_stream.write(f.read())
+        file_stream.seek(0)
+
+        response = send_file(
+            file_stream,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=filename,
+            etag=True,
+            conditional=True
+        )
+        response.headers['X-Query-Response'] = response_text
+        return response
+
     except Exception as e:
+        app.logger.error(f"Query failed: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -12,19 +12,19 @@ class CSVAgentExecutor:
         
         # Create Langchain LLM wrapper
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro-preview-05-06",
+            model="gemini-2.0-flash",
             temperature=0,
-            convert_system_message_to_human=True,
             google_api_key=os.environ["GEMINI_API_KEY"]  # Explicit key pass
         )
         
         # Rest of the initialization remains the same
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", """Analyze CSV requests with these rules:
-1. Use tools for data modifications
-2. For analytical questions, first get summary with csv_get_summary
-3. Always verify data existence before operations
-4. Report errors clearly"""),
+                1. Use tools for data modifications like add/remove/set for rows/columns/cells
+                2. For analytical questions, first get summary with csv_get_summary
+                3. Always verify data existence before operations
+                4. Report errors clearly"""
+            ),
             ("human", "{input}"),
             ("placeholder", "{agent_scratchpad}"),
         ])
@@ -34,9 +34,9 @@ class CSVAgentExecutor:
         self.executor = AgentExecutor(
             agent=self.agent, 
             tools=self.tools,
-            verbose=True,
+            verbose=False,
             handle_parsing_errors=True,
-            return_intermediate_steps=True
+            return_intermediate_steps=False
         )
 
     def execute(self, file_path: str, question: str):

@@ -10,6 +10,8 @@ csv-agent-chatbot/
 │   │   │   ├── ChatWindow.jsx
 │   │   │   ├── FileUploader.jsx
 │   │   │   └── TableView.jsx
+│   │   ├── theme/
+│   │   │   └── useTheme.js
 │   │   ├── api/
 │   │   │   └── chatbot.js
 │   │   ├── pages/
@@ -21,24 +23,15 @@ csv-agent-chatbot/
 │   └── tailwind.config.js
 │
 ├── backend/
-│   ├── node/                    # Node.js middleware/API
-│   │   ├── routes/
-│   │   │   └── chatbotRoutes.js
-│   │   ├── controllers/
-│   │   │   └── chatbotController.js
-│   │   ├── utils/
-│   │   │   └── fileHandler.js
-│   │   ├── server.js
-│   │   └── .env
-│
 │   ├── flask/                   # Python Flask + LangChain backend
 │   │   ├── agents/
-│   │   │   └── csv_agent.py     # LangChain LLM logic
-│   │   ├── rules/
-│   │   │   └── rule_engine.py   # Regex & simple command handler
+│   │   │   └── agent_executor.py     # LangChain LLM logic
+│   │   ├── tools/
+│   │   │   └── csv_operations.py   # Lanchain CSV operation tools
 │   │   ├── core/
-│   │   │   ├── csv_editor.py    # CSV manipulation logic (add/remove/set)
-│   │   │   └── router.py        # Routes query → rule_engine or LLM agent
+│   │   │   ├── data_processor
+|   |   |   |   ├── csv_editor.py   # CSV manipulation logic (add/remove/set)
+│   │   │   └── router.py        # Routes query → LLM agent
 │   │   ├── data/
 │   │   │   └── uploaded/        # Stored CSVs
 │   │   ├── app.py               # Flask entrypoint
