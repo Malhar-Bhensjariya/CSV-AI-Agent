@@ -4,6 +4,9 @@ A powerful AI assistant for CSV data analysis built with a React + TailwindCSS f
 
 ---
 
+## Live Demo
+Try it live: [https://csv-ai-agent.vercel.app/](https://csv-ai-agent.vercel.app/)
+
 ## Project Structure
 
 ```text
