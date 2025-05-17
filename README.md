@@ -7,6 +7,7 @@ A powerful AI assistant for CSV data analysis built with a React + TailwindCSS f
 ## Project Structure
 
 csv-ai-agent/
+
 │
 ├── frontend/ # React frontend + TailwindCSS
 │ ├── public/
